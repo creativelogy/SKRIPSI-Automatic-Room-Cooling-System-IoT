@@ -15,7 +15,7 @@ IRsendRaw mySender;
 
 //define variable
 
-#define setDelayTime 10000
+#define setDelayTime 300000
 int Desired_temp = 24;
 int newDesired_temp;
 int Measured_temp;
@@ -55,8 +55,9 @@ void setup() {
 void loop() {
   DateTime now = rtc.now();  // get current time from RTC module
 
-  if (now.hour() >= 1 && now.hour() < 17 && now.dayOfTheWeek() != 6 && now.dayOfTheWeek() != 7) {
-
+  if (now.hour() >= 8 && now.hour() < 17 && now.dayOfTheWeek() != 6 && now.dayOfTheWeek() != 7) {
+    sensors.requestTemperatures();
+    Measured_temp = sensors.getTempCByIndex(0);
     SysPower = 1;
     TurnOnAC();
 
@@ -69,6 +70,7 @@ void loop() {
       Serial.println("-------------------------------------");
       Serial.print("Suhu ruangan:");
       Serial.println(Measured_temp);
+      matchTemperature();
     } else if (Measured_temp == Desired_temp) {
       Serial.println("-------------------------------------");
       Serial.println("Suhu sudah sesuai :) Have A Nice Day!");
@@ -102,6 +104,8 @@ void TurnOnAC() {
     Serial.println("Turning ON AC...");
     //nyalain ac
     mySender.send(rawon_24Flow_swon, RAW_DATA_LEN_AC, 38);
+    Serial.print("Suhu ruangan:");
+    Serial.println(Measured_temp);
     AC = true;
     AC_Temp = 24;
     delay(setDelayTime);
