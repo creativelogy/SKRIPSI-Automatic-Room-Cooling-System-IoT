@@ -60,6 +60,7 @@ void loop() {
     Measured_temp = sensors.getTempCByIndex(0);
     SysPower = 1;
     TurnOnAC();
+    TurnOnFAN();
 
     sensors.requestTemperatures();
     Measured_temp = sensors.getTempCByIndex(0);
@@ -157,8 +158,10 @@ void kipasAnginFanSpeed() {
     Fanspeed_FAN++;
     Serial.print("Protocol: ");
     Serial.println("Increase FAN Fanspeed");
-  } else if (Fanspeed_FAN > 2) {
+  } else if (Fanspeed_FAN > 3) {
     //Fanspeed_FAN = 0;
+    Serial.print("Protocol: ");
+    Serial.println("FAN Fanspeed = Low");
   }
 }
 
@@ -198,10 +201,14 @@ void decreaseTemperature() {
     Fanspeed_AC++;
     if (Fanspeed_AC == 2) {
       mySender.send(rawon_16Fmed_swon, RAW_DATA_LEN_AC, 38);
+      kipasAnginFanSpeed();
     } else if (Fanspeed_AC == 3) {
       mySender.send(rawon_16Fhigh_swon, RAW_DATA_LEN_AC, 38);
+      kipasAnginFanSpeed();
     } else {
       mySender.send(rawon_16Flow_swon, RAW_DATA_LEN_AC, 38);
+      kipasAnginFanSpeed();
+      kipasAnginFanSpeed();
     }
     Serial.print("Protocol: ");
     Serial.print("AC Fanspeed Increase, is now: ");
@@ -240,24 +247,25 @@ void decideIR() {
       Serial.print("Protocol: ");
       Serial.println("AC Temp is now 16°C");
       mySender.send(rawon_16Flow_swon, RAW_DATA_LEN_AC, 38);
+      delay(setDelayTime);
       break;
     case 17:
       Serial.print("Protocol: ");
       Serial.println("AC Temp is now 17°C");
       mySender.send(rawon_17Flow_swon, RAW_DATA_LEN_AC, 38);
+      delay(setDelayTime);
       break;
     case 18:
       Serial.print("Protocol: ");
       Serial.println("AC Temp is now 18°C");
       mySender.send(rawon_18Flow_swon, RAW_DATA_LEN_AC, 38);
+      delay(setDelayTime);
       break;
     case 19:
       Serial.print("Protocol: ");
       Serial.println("AC Temp is now 19°C");
       mySender.send(rawon_19Flow_swon, RAW_DATA_LEN_AC, 38);
-      TurnOnFAN();
       delay(setDelayTime);
-      kipasAnginFanSpeed();
       break;
     case 20:
       Serial.print("Protocol: ");
